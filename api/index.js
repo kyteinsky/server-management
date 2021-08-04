@@ -14,7 +14,7 @@ app.use(morgan('combined'))
 
 app.use(verifyToken)
 
-app.all('/', (req, res) => {
+app.all('/user', (req, res) => {
 	res.json({ user: req.user })
 })
 

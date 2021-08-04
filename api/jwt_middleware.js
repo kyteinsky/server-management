@@ -1,14 +1,12 @@
 // '/api/jwt' route
 
 const jwt = require('jsonwebtoken');
-if (process.env.NODE_ENV !== 'production')
-	require('dotenv').config()
-const secret = process.env.JWT_SECRET || 'secret'
-
+const secret = process.env.JWT_SECRET
 
 const verifyToken = (req, res, next) => {
+	// const token = req.headers.cookie.substring(req.headers.cookie.indexOf('=') + 1, req.headers.cookie.length);
 	const token =
-		req.body?.token || req.query?.token || req.headers["x-access-token"];
+		req.body?.access_token || req.query?.access_token || req.headers["x-access-token"] || req.headers?.authorization;
 
 	if (!token) {
 		return res.status(403).send("A token is required for authentication");

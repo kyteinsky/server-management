@@ -18,6 +18,9 @@ app.use(verifyToken)
 const dockerRoutes = require('./routes/docker')
 app.use('/docker', dockerRoutes)
 
+const dbRoutes = require('./routes/database')
+app.use('/database', dbRoutes)
+
 app.all('/user', (req, res) => {
 	res.json({ user: req.user })
 })

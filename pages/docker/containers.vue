@@ -70,7 +70,7 @@
           { text: 'State', value: 'State' },
           { text: 'Status', value: 'Status' },
           { text: 'Mounts', value: 'Mounts' },
-					{ text: "", value: "controls", sortable: false }
+					{ text: "Stop", value: "controls", sortable: false }
         ],
 				snackbar: false,
 				timeout: 2000,

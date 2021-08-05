@@ -14,11 +14,17 @@
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/pwa": "^3.3.5",
     "core-js": "^3.15.1",
-    "element-ui": "^2.15.2",
+    "dockerode": "^3.3.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "nuxt": "^2.15.7"
+    "node-docker-api": "^1.1.22",
+    "nuxt": "^2.15.7",
+    "timeago.js": "^4.0.2",
+    "vuetify": "^2.5.8"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.12.1",
+    "node-json-color-stringify": "^1.1.0"
+  }
 }

@@ -6,8 +6,7 @@
 			class="elevation-1"
 		>
 			<template v-slot:item.controls="props">
-			<h5>{{ props.loading  }}</h5>
-				<v-btn @click="deleteImage(props.item)">
+				<v-btn @click="doImage(props.item, 'delete')">
 				<!--<v-progress-circular
 						v-if="loading[props.item.Id]"
 						indeterminate
@@ -16,7 +15,7 @@
 					<v-icon v-else>mdi-delete</v-icon>-->
 					<v-icon>mdi-delete</v-icon>
 				</v-btn>
-				<v-btn @click="makeContainer(props.item)">
+				<v-btn @click="doImage(props.item, 'create')">
 					<!--<v-progress-circular
 						v-if="props.item.loading"
 						indeterminate
@@ -50,22 +49,33 @@
 
 <script>
 	// const timeago = require('timeago.js')
-	export default {
-		async asyncData({ $axios }) {
-			try {
-				const items = await $axios.$get(`/docker/images`)
-				items.forEach(image => {
+	const axios = require('axios')
+	async function getImageList() {
+		try {
+			// axios.setToken(localStorage.access_token);
+			const res = await axios.get(`/api/docker/images`, {
+				headers:
+					{
+						'authorization': localStorage.access_token
+					}
+			})
+			const items = res?.data
+			items.forEach(image => {
 					if (image.Containers == -1)
 						image.Containers = 'None'
 					image.Id = image.Id.substring(7, 7+12)
 					image.Created = new Date(image.Created).toLocaleString()
 					image.Size = parseInt(image.Size / 1000 / 1000) + ' mb'
 				});
-				return { items }
-			} catch (e) {
-				console.log(e);
-				return { items: [] }
-			}
+			return items
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	export default {
+		async asyncData() {
+			return { items: await getImageList() }
 		},
 
 		data() {
@@ -84,15 +94,23 @@
 			}
 		},
 
+		mounted() {
+			window.setInterval(() => {
+				getImageList()
+					.then(items => this.items = items)
+					.catch(e => console.error(e))
+			}, 5000)
+		},
+
 		methods: {
-			deleteImage(item) {
+			doImage(item) {
 				this.snackbar = true
 				this.text = 'Sending request to server'
 				this.$axios.$post(
 					'/docker/images/delete',
 					{ ImageId: item.Id }
 				)
-				.then(res => this.text = res)
+				.then(res => this.text = res || `${action} job successful for Image ${item.Id}`)
 				.catch(e => this.text = e.message)
 
 				// remove it from view

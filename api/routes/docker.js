@@ -6,28 +6,27 @@ const express = require('express'),
 require('node-json-color-stringify')
 
 router.get('/', (req, res) => {
-	console.log('docker here');
-	res.send("docker here");
+	res.send("Welcome to The Management Console!");
 })
 
 const {
 	listImages,
-	deleteImage,
+	doImage,
 } = require('../docker/images.js');
 
 const {
 	listContainers,
-	stopContainer,
+	doContainer,
 } = require('../docker/containers.js');
 
 const { listServices } = require('../docker/services.js');
 
 
 router.get('/images', listImages(docker))
-router.post('/images/delete', deleteImage(docker))
+router.post('/images/:action', doImage(docker))
 
 router.get('/containers', listContainers(docker))
-router.post('/containers/stop', stopContainer(docker))
+router.post('/containers/:action', doContainer(docker))
 
 router.get('/services', listServices(docker))
 

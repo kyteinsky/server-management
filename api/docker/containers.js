@@ -1,26 +1,56 @@
 
 const listContainers = (docker) => (req, res) => {
-	docker.listContainers((err, containers) => {
+	docker.listContainers({ all: true }, (err, containers) => {
 		if (err) {
-			console.error(err);
-			res.send(err);
+			console.error(err)
+			res.send(err.message)
 		} else {
 			res.send(containers);
 		}
 	})
 }
 
-const stopContainer = (docker) => (req, res) => {
-	docker.getContainer(req.body.ContainerId).stop((err) => {
-		if (err) {
-			console.error(err);
-			res.send('Some error occurred')
+const doContainer = (docker) => (req, res) => {
+	try {
+		switch (req.params.action) {
+			case 'stop':
+				docker.getContainer(req.body.id).stop((e, f) => {
+					if (e) {
+						console.error(JSON.stringify(e));
+						if (e?.json?.message) res.send(e?.json?.message)
+						else res.send(e?.reason)
+					} else res.send('')
+				})
+				break;
+			case 'delete':
+				docker.getContainer(req.body.id).remove(
+					{ force: true },
+					(e, f) => {
+						if (e) {
+							console.error(JSON.stringify(e));
+							if (e?.json?.message) res.send(e?.json?.message)
+							else res.send(e?.reason)
+						} else res.send('')
+					}
+				)
+				break;
+			case 'start':
+				docker.getContainer(req.body.id).start((e, f) => {
+					if (e) {
+						console.error(JSON.stringify(e));
+						if (e?.json?.message) res.send(e?.json?.message)
+						else res.send(e?.reason)
+					} else res.send('')
+				})
+				break;
 		}
-		res.send('Success');
-	});
+	} catch (e) {
+		console.error(JSON.stringify(e));
+		res.send(e)
+	}
 }
 
 module.exports = {
 	listContainers,
-	stopContainer,
+	doContainer,
 }

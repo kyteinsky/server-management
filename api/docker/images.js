@@ -24,7 +24,27 @@ const deleteImage = (docker) => (req, res) => {
 	}
 }
 
+const doImage = (docker) => (req, res) => {
+	try {
+		switch (req.params.action) {
+			case 'delete':
+				docker.getImage(req.body.ImageId).remove(e => {
+						if (e) {
+							console.error(JSON.stringify(e));
+							if (e?.json?.message) res.send(e?.json?.message)
+							else res.send(e?.reason)
+						} else res.send('Success')
+					}
+				)
+				break;
+		}
+	} catch (e) {
+		console.error(JSON.stringify(e));
+		res.send(e)
+	}
+}
+
 module.exports = {
 	listImages,
-	deleteImage,
+	doImage,
 }
